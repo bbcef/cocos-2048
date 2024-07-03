@@ -1,4 +1,4 @@
-import { _decorator, Component, EventKeyboard, EventTouch, game, input, Input, instantiate, KeyCode, Label, macro, Node, Prefab, sys, SystemEvent, systemEvent, tween, Vec3 } from 'cc';
+import { _decorator, Component, EventKeyboard, EventTouch, game, input, Input, instantiate, KeyCode, Label, Node, Prefab, sys, tween, Vec3 } from 'cc';
 import { Grid } from "./Grid"
 const { ccclass, property } = _decorator;
 
@@ -173,7 +173,7 @@ export class Game extends Component {
             this._moving = false
             this.randGrid()
             this.checkFail()
-        }, DURATION)
+        }, DURATION + 0.1)
     }
     private randGrid() {
         const randGrids: Grid[] = []
@@ -182,7 +182,8 @@ export class Game extends Component {
                 if (!grid.num) randGrids.push(grid)
             }
         }
-        const grid = randGrids[this.randRange(0, randGrids.length - 1)]
+        let randNum = this.randRange(0, randGrids.length - 1)
+        const grid = randGrids[randNum]
         grid.num = 2
         grid.node.setScale(0, 0, 0)
         let scales = new Vec3(1, 1, 1)
@@ -220,8 +221,7 @@ export class Game extends Component {
                 idx++
             }
         }
-
-        this.gridPrefab.destroy()
+        // this.gridPrefab.destroy()
 
         for (let col = 0; col < GRID_SIZE; col++) {
             this.gridsReversed[col] = []
@@ -233,7 +233,9 @@ export class Game extends Component {
         this.showScore()
 
         const btnRestart = this.node.getChildByName('btnRestart')
-        btnRestart.on('click', async () => await game.restart())
+        btnRestart.on('click', () => {
+            game.restart()
+        })
         this.initPanelFailed()
     }
 
